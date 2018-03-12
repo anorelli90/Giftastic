@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+</head>
+
+<body>
+    <div id="hobby"></div>
+    <div id="gifs-appear-here"></div>
+<script type="text/javascript">
+
+var hobbyAry = ["hockey ", "comedy ", "cats ", "shia labouf","parkour","New York Yankees","funny fails","dunking","seinfeld","olympics"];
+
+for( var i = 0; i < hobbyAry.length; i++){
+    var a = $("<button>");
+    a.attr("data-name", hobbyAry[i]);
+    a.text(hobbyAry[i]);
+    $("#hobby").append(a);
+    console.log(hobbyAry[i]);
+}
+
+$("button").on("click", function(event){
+    var hobby = $(this).attr("data-person");
+
+
+var hobby = $(this).attr("data-name");
+var queryURL = "http://api.giphy.com/v1/gifs/search?q=" + hobby + "&api_key=KNnGDSIxcvIslFsPu0szbkOdXwXCCp3V&limit=10";
+
+$.ajax({
+    url: queryURL,
+    method: "GET"
+}).then(function(response){
+    var result = response.data;
+    // $("#gifs-appear-here").text(JSON.stringify(response.data));
+    console.log(response);
+    console.log(result);
+
+  for ( var j = 0; j< result.length; j++){
+     
+      var resultDiv = $("<div class= 'item'>");
+      var rating = result[j].rating;
+      var p = $("<p>").text("Rating: " + rating);
+      var personImage = $("<img>")
+      personImage.attr("src", result[j].images.fixed_height.url);
+      console.log(personImage);
+      resultDiv.append(p);
+      resultDiv.append(personImage);
+      $("#gifs-appear-here").prepend(resultDiv); 
+
+
+
+
+    //   var p = $("<p>").text("Rating");
+    //   $("#hobby").append(p);
+
+} 
+})
+
+})
+
+
+
+
+
+
+
+
+
+</script>
+
+
+
+
+
+</body>
+</html>
