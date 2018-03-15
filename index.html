@@ -1,81 +1,133 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
 
-<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 </head>
+
+<style>
+
+#user-choice{
+    float:right;
+    margin-right: 40px;
+}
+
+#add-category{
+    float:right;
+    margin-right: 40px;
+}
+</style>
 
 <body>
     <div id="hobby"></div>
     <div id="gifs-appear-here"></div>
-<script type="text/javascript">
 
-var hobbyAry = ["hockey ", "comedy ", "cats ", "shia labouf","parkour","New York Yankees","funny fails","dunking","seinfeld","olympics"];
+    <form id="user-choice">
+        <label for="user-input"></label>
+        <input type="text" id="user-input"><br>
+  
+        <!-- Button triggers new hobby to be added -->
+        <input id="add-category" type="submit" value="Add A Category">
+      </form>
 
-for( var i = 0; i < hobbyAry.length; i++){
-    var a = $("<button>");
-    a.attr("data-name", hobbyAry[i]);
-    a.text(hobbyAry[i]);
-    $("#hobby").append(a);
-    console.log(hobbyAry[i]);
-}
+    <script type="text/javascript">
+    
+        // setting up the array for the initial buttons and for the user to add buttons\\
 
-$("button").on("click", function(event){
-    var hobby = $(this).attr("data-person");
+        var hobbyAry = ["hockey ", "comedy ", "cats ", "shia labouf", "parkour", "New York Yankees", "funny fails",
+            "dunking", "seinfeld", "olympics"];
 
+        // looping thru the array, creating buttons at each index, giving each button the data name attribute and 
+        // text attribute at each index
+        // appending each button to the hobby ID div
 
-var hobby = $(this).attr("data-name");
-var queryURL = "http://api.giphy.com/v1/gifs/search?q=" + hobby + "&api_key=KNnGDSIxcvIslFsPu0szbkOdXwXCCp3V&limit=10";
-
-$.ajax({
-    url: queryURL,
-    method: "GET"
-}).then(function(response){
-    var result = response.data;
-    // $("#gifs-appear-here").text(JSON.stringify(response.data));
-    console.log(response);
-    console.log(result);
-
-  for ( var j = 0; j< result.length; j++){
-     
-      var resultDiv = $("<div class= 'item'>");
-      var rating = result[j].rating;
-      var p = $("<p>").text("Rating: " + rating);
-      var personImage = $("<img>")
-      personImage.attr("src", result[j].images.fixed_height.url);
-      console.log(personImage);
-      resultDiv.append(p);
-      resultDiv.append(personImage);
-      $("#gifs-appear-here").prepend(resultDiv); 
+        function renderButtons() {
+        for (var i = 0; i < hobbyAry.length; i++) {
+            $("#hobby").empty();
+            var a = $("<button>");
+            a.attr("data-name", hobbyAry[i]);
+            a.text(hobbyAry[i]);
+            $("#hobby").append(a);
+            console.log(hobbyAry[i]);
+        }
+        }
 
 
+        $("#add-category").on("click",function(){
+            event.preventDefault();
+            var newHobby= $("#user-input").val();
+            hobbyAry.push(newHobby);
+            $("gif-appear-here").append(newHobby);
+            console.log(newHobby);
+            renderButtons();
+        })
 
 
-    //   var p = $("<p>").text("Rating");
-    //   $("#hobby").append(p);
+        // creating an event listener, with an onclick function\\
 
-} 
-})
+        $("button").on("click", function (event) {
 
-})
+        // create two variables
+        // a hobby vairable that accesses the data-name of the button clicked
+        // a query URL variable that we use to access our api for the search    
+
+            var hobby = $(this).attr("data-name");
+            var queryURL = "http://api.giphy.com/v1/gifs/search?q=" + hobby +
+                "&api_key=KNnGDSIxcvIslFsPu0szbkOdXwXCCp3V&limit=10";
+
+        // use the ajax function to query the URL and Get data
+        // use the .then method to return the data and store that data in a variable one step lower in the object
+        // console log the full response and the variable        
+
+            $.ajax({
+                url: queryURL,
+                method: "GET"
+            }).then(function (response) {
+                var result = response.data;
+        // $("#gifs-appear-here").text(JSON.stringify(response.data));
+                console.log(response);
+                console.log(result);
+
+        // create a for loop, lopping thru the resulting array        
+                for (var j = 0; j < result.length; j++) {
+
+        // create a variable to, create a new div to put into the HTML   
+        // create a variable to store the deisred data to be displayed, in this case rating
+        // create another variable storing the rating result at each index
+        // create a variable that creates a paragraph and adds the resulting data and text to it
+        // create variable storing and creating a new img, add the image attributes and the url data from the api result
+        // append to the result div then append the result div to the div in the HTML          
+                    var resultDiv = $("<div class= 'item'>");
+                    var rating = result[j].rating;
+                    var p = $("<p>").text("Rating: " + rating);
+                    var personImage = $("<img>")
+                    personImage.attr("src", result[j].images.fixed_height.url);
+                    console.log(personImage);
+                    resultDiv.append(p, personImage);
+                    // resultDiv.append(personImage);
+                    $("#gifs-appear-here").prepend(resultDiv);
 
 
 
 
+                    //   var p = $("<p>").text("Rating");
+                    //   $("#hobby").append(p);
 
+                }
+            })
 
-
-
-
-</script>
+        })
+    </script>
 
 
 
 
 
 </body>
+
 </html>
